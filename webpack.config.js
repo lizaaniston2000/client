@@ -50,9 +50,5 @@ module.exports = {
         'window.jQuery': 'jquery',
         jQuery: 'jquery'
       })
-  ],
-  devServer: {
-    inline: true,
-    hot:true
-  }
+  ]
 }
