@@ -285,10 +285,10 @@ export default {
     Vue.axios.get("https://yubi-server.herokuapp.com/api/news").then((response) => {
         this.news = response.data
     })
-    Vue.axios.get("http://localhost:5000/api/event").then((response) => {
+    Vue.axios.get("https://yubi-server.herokuapp.com/api/event").then((response) => {
         this.event = response.data
     })
-    Vue.axios.get("http://localhost:5000/api/teach").then((response) => {
+    Vue.axios.get("https://yubi-server.herokuapp.com/api/teach").then((response) => {
         this.teachers = response.data
     })
    },
