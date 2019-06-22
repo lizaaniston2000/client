@@ -282,7 +282,7 @@ export default {
     };
   },
   mounted: function() {
-    Vue.axios.get("http://localhost:5000/api/news").then((response) => {
+    Vue.axios.get("https://yubi-server.herokuapp.com/api/news").then((response) => {
         this.news = response.data
     })
     Vue.axios.get("http://localhost:5000/api/event").then((response) => {
