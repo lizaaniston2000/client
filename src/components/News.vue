@@ -57,6 +57,31 @@
             <button class="button" v-on:click.prevent="new_teach()">ок</button><br>
         </form>
     </center>
+    <center>
+         <table>
+            <tr><th>Назва події</th><th>Посилання на фото</th><th>Дата(заповнювати у форматі "24-06-2019"</th><th>Видалення</th><th>Редагування</th></tr>
+            <tr v-for="event in events" v-bind:key="event._id">
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.event_name}}</router-link></td>
+                <td v-else><input type="text" v-model="c_e_name"></td>
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.src}}</router-link></td>
+                <td v-else><input type="text" v-model="c_e_src"></td>
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.event_date}}</router-link></td>
+                <td v-else><input type="text" v-model="c_e_date"></td>
+                <td><a href="#" class="delete_but" v-on:click.prevent="remove_event(event._id)">Видалити</a></td>
+                <td><img id="penc" v-on:click.prevent="change_init_event(event._id)" src="https://img.icons8.com/office/50/000000/pencil.png" style="width:20px;">
+                <button class="delete_but" v-if="check_event(event._id)" v-on:click="change_event()">Змінити</button>
+                </td>
+            </tr>
+        </table>
+    </center>
+     <center>
+        <form>
+            <input type="text" class="input" v-model="n_e_name" placeholder="назва події">
+            <input type="text" class="input" placeholder="посилання на фото" v-model="n_e_src">
+            <input type="text" class="input" placeholder="дата (формат 24-06-2019)" v-model="n_e_date">
+            <button class="button" v-on:click.prevent="new_event()">ок</button><br>
+        </form>
+    </center>
   </div>  
 </template>
 
@@ -72,11 +97,15 @@ export default {
     return{
          students: [],
          teaches:[],
+         events:[],
          search:'',
          n_t_name:'',
          n_t_src:'',
          n_t_d:'',
          n_t_info: '',
+         n_e_name:'',
+         n_e_src:'',
+         n_e_date: '',
          n_photo: '',
          n_name: '',
          n_item:'',
@@ -87,8 +116,13 @@ export default {
          c_t_src:'',
          c_t_d:'',
          c_t_info: '',
+         c_e_name:'',
+         c_e_src:'',
+         c_e_date: '',
          ch: '',
          ct: '',
+         em: '',
+         e:'',
          n: '',
          t: '',
          style: ''
@@ -109,8 +143,34 @@ export default {
         .then(()=>{
             console.log(this.students.length);
         });
+        Vue.axios.get("https://yubi-server.herokuapp.com/api/event").then((response)=>{
+            console.log(response.data);
+            this.teaches = response.data;
+        })
+        .then(()=>{
+            console.log(this.students.length);
+        });
     },
     methods: {
+    new_event: function(){
+        let ec = new Object;
+            ec.event_name = this.n_e_name;
+            ec.src= this.n_e_src;
+            ec.event_date=this.n_e_date;
+            Vue.axios.post("https://yubi-server.herokuapp.com/api/teach", {
+                src: this.n_e_src,
+                event_name: this.n_e_name,
+                event_date:this.n_e_date
+            })
+            .then((response)=>{
+                ec._id=response.data._id;
+                console.log(response.data);
+            })
+        this.teaches.push(ec);
+        this.n_e_src = '';
+        this.n_e_name = '';
+        this.n_e_date='';
+    },
     new_teach: function(){
         let tc = new Object;
             tc.src = this.n_t_photo;
@@ -152,6 +212,14 @@ export default {
         this.n_name = '';
         this.n_item='';
         },
+        remove_event : function(event){
+            Vue.axios.delete("https://yubi-server.herokuapp.com/api/event/"+event, {})
+            .then((response)=>{
+                 console.log(response.data);
+            })
+                this.events=this.events.filter(element=>{
+                return element._id!==event;});
+            },
         remove_student : function(student){
             Vue.axios.delete("https://yubi-server.herokuapp.com/api/news/"+student, {})
             .then((response)=>{
@@ -168,6 +236,21 @@ export default {
                 this.teaches=this.teaches.filter(element=>{
                 return element._id!==teach;});
             },
+        change_init_event : function(event){
+            this.em = event;
+            this.e = this.events.find(function(element){
+                return element._id==event;
+            });
+            this.c_e_name = this.e.event_name;
+            this.c_e_src=this.e.src;
+            this.c_e_date=this.e.event_name;
+        },
+        check_event(event){
+            if(event == this.em)
+            {
+                return true;
+            }
+        },
         change_init : function(student){
             this.ch = student;
             this.n = this.students.find(function(element){
@@ -226,7 +309,20 @@ export default {
                 this.t.ped_info=this.c_t_info;
             });
         this.ct=''; 
-        }  
+        },
+        change_event: function(){
+            Vue.axios.put("https://yubi-server.herokuapp.com/api/event/"+this.em, {
+                event_name: this.c_e_name,
+                src: this.c_e_src,
+                event_date:this.c_e_date
+            })
+            .then((response)=>{
+                this.e.event_name = this.c_e_name;
+                this.e.src=this.c_e_src;
+                this.e.event_date=this.c_e_date;
+            });
+        this.em=''; 
+        } 
     },
     computed: {
     }
