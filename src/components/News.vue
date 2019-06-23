@@ -59,13 +59,13 @@
     </center>
     <center>
          <table>
-            <tr><th>Назва події</th><th>Посилання на фото</th><th>Дата(заповнювати у форматі "24-06-2019"</th><th>Видалення</th><th>Редагування</th></tr>
+            <tr><th>Назва події</th><th>Посилання на фото</th><th>Дата</th><th>Видалення</th><th>Редагування</th></tr>
             <tr v-for="event in events" v-bind:key="event._id">
-                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.event_name}}</router-link></td>
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/news/' + event._id">{{event.event_name}}</router-link></td>
                 <td v-else><input type="text" v-model="c_e_name"></td>
-                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.src}}</router-link></td>
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/news/' + event._id">{{event.src}}</router-link></td>
                 <td v-else><input type="text" v-model="c_e_src"></td>
-                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/event/' + event._id">{{event.event_date}}</router-link></td>
+                <td v-if="!check_event(event._id)"><router-link id="event._id" v-bind:to="'/news/' + event._id">{{event.event_date}}</router-link></td>
                 <td v-else><input type="text" v-model="c_e_date"></td>
                 <td><a href="#" class="delete_but" v-on:click.prevent="remove_event(event._id)">Видалити</a></td>
                 <td><img id="penc" v-on:click.prevent="change_init_event(event._id)" src="https://img.icons8.com/office/50/000000/pencil.png" style="width:20px;">
@@ -78,7 +78,7 @@
         <form>
             <input type="text" class="input" v-model="n_e_name" placeholder="назва події">
             <input type="text" class="input" placeholder="посилання на фото" v-model="n_e_src">
-            <input type="text" class="input" placeholder="дата (формат 24-06-2019)" v-model="n_e_date">
+            <input type="text" class="input" placeholder="дата (формат 2019-06-24)" v-model="n_e_date">
             <button class="button" v-on:click.prevent="new_event()">ок</button><br>
         </form>
     </center>
@@ -145,7 +145,7 @@ export default {
         });
         Vue.axios.get("https://yubi-server.herokuapp.com/api/event").then((response)=>{
             console.log(response.data);
-            this.teaches = response.data;
+            this.events = response.data;
         })
         .then(()=>{
             console.log(this.students.length);
@@ -157,7 +157,7 @@ export default {
             ec.event_name = this.n_e_name;
             ec.src= this.n_e_src;
             ec.event_date=this.n_e_date;
-            Vue.axios.post("https://yubi-server.herokuapp.com/api/teach", {
+            Vue.axios.post("https://yubi-server.herokuapp.com/api/event", {
                 src: this.n_e_src,
                 event_name: this.n_e_name,
                 event_date:this.n_e_date
@@ -166,7 +166,7 @@ export default {
                 ec._id=response.data._id;
                 console.log(response.data);
             })
-        this.teaches.push(ec);
+        this.events.push(ec);
         this.n_e_src = '';
         this.n_e_name = '';
         this.n_e_date='';
@@ -243,7 +243,7 @@ export default {
             });
             this.c_e_name = this.e.event_name;
             this.c_e_src=this.e.src;
-            this.c_e_date=this.e.event_name;
+            this.c_e_date=this.e.event_date;
         },
         check_event(event){
             if(event == this.em)

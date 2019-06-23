@@ -262,13 +262,14 @@
 
 .mobile_menu {
   position: absolute;
+  top: 63px;
   display: none;
   width: 100%;
   background: #ffffff;
 }
 
 .mobile_menu__items {
-  padding-left: 5%;
+  padding-left: 0;
   margin: 0;
   list-style: none;
   font-family: 'Pattaya', sans-serif;
@@ -277,13 +278,16 @@
 }
 
 .mobile_menu li {
-  padding-bottom: 3%;
+  padding-bottom: 4%;
+  padding-top: 4%;
+  border-bottom: 1px solid silver;
 }
 
 .mobile_menu a {
   text-decoration: none;
   color: #000000;
   display: block;
+  padding-left: 5%;
 }
 
 .fixedNav {
