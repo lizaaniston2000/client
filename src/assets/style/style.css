@@ -967,4 +967,9 @@
       padding: 10px 7px;
     }
   }
+@media (max-width: 320px) {
+  .input {
+    width: 140px;
+  }
+}
 /*# sourceMappingURL=style.css.map */
